@@ -3,6 +3,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class WorkflowRunner {
     
@@ -16,7 +18,8 @@ public class WorkflowRunner {
     }
     
     private static void runWorkflow(String workflowId, String[] input, int num) {
-        log("Begin runWorkflow " + workflowId + " " + String.join(",", input) + " " + num);
+        String inputJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
+        log("Begin runWorkflow " + workflowId + " " + inputJson + " " + num);
         
         try {
             // 创建HTTP连接
@@ -29,8 +32,8 @@ public class WorkflowRunner {
             
             // 构建JSON请求体
             String jsonInputString = String.format(
-                "{\"workflow_id\": \"%s\",\"parameters\": {\"input\": \"%s\", \"num\": \"%d\"},\"is_async\": false}",
-                workflowId, String.join(",", input), num
+                "{\"workflow_id\": \"%s\",\"parameters\": {\"input\": %s, \"num\": \"%d\"},\"is_async\": false}",
+                workflowId, inputJson, num
             );
             
             // 发送请求
@@ -72,7 +75,8 @@ public class WorkflowRunner {
             e.printStackTrace();
         }
         
-        log("End runWorkflow " + workflowId + " " + String.join(",", min) + " " + num);
+        String inputJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
+        log("End runWorkflow " + workflowId + " " + inputJson + " " + num);
     }
     
     // 程序入口 - 唯一的主方法
