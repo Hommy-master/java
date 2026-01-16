@@ -1,37 +1,32 @@
-FROM python:3.11
+FROM openjdk:17-jdk-slim
 
 ENV HOME="/root" \
     DEBIAN_FRONTEND=noninteractive
 
-# 更新包列表并安装工具、nginx和pgloader，同时清理缓存以减小镜像体积
+# 更新包列表并安装常用的构建工具和实用程序
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     wget \
     curl \
-    nginx \
-    pgloader && \
-    rm -rf /var/lib/apt/lists/*
+    git \
+    maven \
+    gradle \
+    unzip \
+    zip \
+    vim \
+    && rm -rf /var/lib/apt/lists/*
 
-# 创建nginx默认站点目录
-RUN mkdir -p /app/www
+# 设置工作目录
+WORKDIR /app
 
-# 配置nginx默认站点
-RUN echo 'server {' > /etc/nginx/sites-available/default && \
-    echo '    listen 80 default_server;' >> /etc/nginx/sites-available/default && \
-    echo '    listen [::]:80 default_server;' >> /etc/nginx/sites-available/default && \
-    echo '    root /app/www;' >> /etc/nginx/sites-available/default && \
-    echo '    index index.html index.htm index.nginx-debian.html;' >> /etc/nginx/sites-available/default && \
-    echo '    server_name _;' >> /etc/nginx/sites-available/default && \
-    echo '    location / {' >> /etc/nginx/sites-available/default && \
-    echo '        try_files $uri $uri/ =404;' >> /etc/nginx/sites-available/default && \
-    echo '    }' >> /etc/nginx/sites-available/default && \
-    echo '}' >> /etc/nginx/sites-available/default
+# 复制应用程序源码（如果有的话）
+# COPY . /app
 
-# 创建一个默认的index.html文件
-RUN echo '<html><head><title>Welcome to nginx!</title></head><body><h1>Welcome to nginx!</h1><p>If you see this page, the nginx web server is successfully installed and working.</p></body></html>' > /app/www/index.html
+# 编译和打包应用程序（示例，根据实际项目调整）
+# RUN mvn clean package -DskipTests
 
-# 暴露80端口
-EXPOSE 80
+# 暴露常见Java应用端口（如Spring Boot默认8080）
+EXPOSE 8080
 
-# 启动nginx服务
-CMD ["nginx", "-g", "daemon off;"]
+# 默认命令可运行Java应用
+CMD ["/bin/sh", "-c", "sleep 10000"]

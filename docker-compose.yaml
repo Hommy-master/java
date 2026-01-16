@@ -1,15 +1,17 @@
 services:
   java:
+    build: .  # 构建当前目录下的Dockerfile
     image: gogoshine/java:latest
     ports:
-      - "80:80"  # 将主机的 80 端口映射到容器内部的 80 端口
+      - "8080:8080"  # Java应用常用端口8080
     volumes:
-      - ./share:/app/www/share
       - ./workspace:/root/workspace
+      - ~/.m2:/root/.m2  # 挂载Maven本地仓库
     mem_limit: 1G     # 内存限制
     memswap_limit: 1G # 总内存（物理内存 + Swap）限制
-    cpus: '1.0'       # CPU使用率限制为150%，即容器最多可以使用1.5个完整的CPU核心
+    cpus: '1.0'       # CPU使用率限制
     oom_score_adj: -500  # 调整 OOM 杀手优先级
     restart: unless-stopped  # 除非手动停止，否则总是重启容器
-    container_name: java # 这里指容器名称，非必需，不指定时，名称为：<项目名称>-<服务名称>-<序号>
-    #entrypoint: ["/bin/sh", "-c", "sleep 10000"]
+    container_name: java # 容器名称
+    # 可选：启动时运行Java应用
+    # command: ["/bin/sh", "-c", "sleep 10000"]
