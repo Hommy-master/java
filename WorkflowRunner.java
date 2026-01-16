@@ -9,8 +9,8 @@ import java.util.stream.Collectors;
 public class WorkflowRunner {
     
     private static final String API_URL = "https://api.coze.cn/v1/workflow/run";
-    private static final String WORKFLOW_ID = "7595817621703245864";
-    private static final String AUTHORIZATION = "Bearer pat_clArWkwdGCGWd7VZpG96sCGriConBBdKTCGJ50mdEJuCKAA2HshshGRveHsuMfiX";
+    private static final String WORKFLOW_ID = "7593243645852516386";
+    private static final String AUTHORIZATION = "Bearer pat_Uq1UAsjIPGv76Ojc1wlQzzgK2kMUg0DVqIjE6jUrHDAoPKPdz708Oh6XEdY6xpIC";
     
     private static void log(String message) {
         String timestamp = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
@@ -38,8 +38,8 @@ public class WorkflowRunner {
             
             // 发送请求
             try (OutputStream os = connection.getOutputStream()) {
-                byte[] input = jsonInputString.getBytes("utf-8");
-                os.write(input, 0, input.length);
+                byte[] temp = jsonInputString.getBytes("utf-8");
+                os.write(temp, 0, temp.length);
             }
             
             // 读取响应
@@ -75,8 +75,8 @@ public class WorkflowRunner {
             e.printStackTrace();
         }
         
-        String inputJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
-        log("End runWorkflow " + workflowId + " " + inputJson + " " + num);
+        String tempJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
+        log("End runWorkflow " + workflowId + " " + tempJson + " " + num);
     }
     
     // 程序入口 - 唯一的主方法
@@ -97,8 +97,8 @@ public class WorkflowRunner {
             }
             
             for (int i = start; i <= end; i++) {
-                String[] minArray = {String.valueOf(i)};
-                runWorkflow(WORKFLOW_ID, minArray, i);
+                String[] arr = {String.valueOf(i)};
+                runWorkflow(WORKFLOW_ID, arr, i);
             }
             
         } catch (NumberFormatException e) {
