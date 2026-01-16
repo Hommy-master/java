@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class WorkflowRunner {
     
     private static final String API_URL = "https://api.coze.cn/v1/workflow/run";
-    private static final String WORKFLOW_ID = "7593243645852516386";
+    private static final String WORKFLOW_ID = "7595912848518758463";
     private static final String AUTHORIZATION = "Bearer pat_Uq1UAsjIPGv76Ojc1wlQzzgK2kMUg0DVqIjE6jUrHDAoPKPdz708Oh6XEdY6xpIC";
     
     private static void log(String message) {
@@ -17,9 +17,8 @@ public class WorkflowRunner {
         System.out.println("[" + timestamp + "] " + message);
     }
     
-    private static void runWorkflow(String workflowId, String[] input, int num) {
-        String inputJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
-        log("Begin runWorkflow " + workflowId + " " + inputJson + " " + num);
+    private static void runWorkflow(String workflowId, String input, int num) {
+        log("Begin runWorkflow " + workflowId + " " + input + " " + num);
         
         try {
             // 创建HTTP连接
@@ -32,8 +31,8 @@ public class WorkflowRunner {
             
             // 构建JSON请求体
             String jsonInputString = String.format(
-                "{\"workflow_id\": \"%s\",\"parameters\": {\"input\": %s, \"num\": \"%d\"},\"is_async\": false}",
-                workflowId, inputJson, num
+                "{\"workflow_id\": \"%s\",\"parameters\": {\"input\": \"%s\", \"num\": \"%d\"},\"is_async\": false}",
+                workflowId, input, num
             );
             
             // 发送请求
@@ -74,9 +73,8 @@ public class WorkflowRunner {
             log("Exception occurred: " + e.getMessage());
             e.printStackTrace();
         }
-        
-        String tempJson = "[" + String.join(",", Arrays.stream(input).map(s -> "\"" + s + "\"").toArray(String[]::new)) + "]";
-        log("End runWorkflow " + workflowId + " " + tempJson + " " + num);
+
+        log("End runWorkflow " + workflowId + " " + input + " " + num);
     }
     
     // 程序入口 - 唯一的主方法
@@ -97,8 +95,7 @@ public class WorkflowRunner {
             }
             
             for (int i = start; i <= end; i++) {
-                String[] arr = {String.valueOf(i)};
-                runWorkflow(WORKFLOW_ID, arr, i);
+                runWorkflow(WORKFLOW_ID, String.valueOf(i), i);
             }
             
         } catch (NumberFormatException e) {
