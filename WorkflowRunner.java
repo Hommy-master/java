@@ -15,8 +15,8 @@ public class WorkflowRunner {
         System.out.println("[" + timestamp + "] " + message);
     }
     
-    private static void runWorkflow(String workflowId, String min, String max) {
-        log("Begin runWorkflow " + workflowId + " " + min + " " + max);
+    private static void runWorkflow(String workflowId, String[] input, int num) {
+        log("Begin runWorkflow " + workflowId + " " + String.join(",", input) + " " + num);
         
         try {
             // 创建HTTP连接
@@ -29,8 +29,8 @@ public class WorkflowRunner {
             
             // 构建JSON请求体
             String jsonInputString = String.format(
-                "{\"workflow_id\": \"%s\",\"parameters\": {\"min\": \"%s\", \"max\": \"%s\"},\"is_async\": false}",
-                workflowId, min, max
+                "{\"workflow_id\": \"%s\",\"parameters\": {\"input\": \"%s\", \"num\": \"%d\"},\"is_async\": false}",
+                workflowId, String.join(",", input), num
             );
             
             // 发送请求
@@ -72,7 +72,7 @@ public class WorkflowRunner {
             e.printStackTrace();
         }
         
-        log("End runWorkflow " + workflowId + " " + min + " " + max);
+        log("End runWorkflow " + workflowId + " " + String.join(",", min) + " " + num);
     }
     
     // 程序入口 - 唯一的主方法
@@ -93,7 +93,8 @@ public class WorkflowRunner {
             }
             
             for (int i = start; i <= end; i++) {
-                runWorkflow(WORKFLOW_ID, String.valueOf(i), String.valueOf(i));
+                String[] minArray = {String.valueOf(i)};
+                runWorkflow(WORKFLOW_ID, minArray, i);
             }
             
         } catch (NumberFormatException e) {
