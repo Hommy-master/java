@@ -40,6 +40,32 @@ mvn clean package
 java -jar your-application.jar
 ```
 
+### 运行单个Java文件（例如coze.java）
+
+1. 将coze.java文件放在项目根目录
+2. 构建并运行容器：
+
+```bash
+# 构建镜像（包含编译coze.java）
+docker-compose build
+
+# 运行容器（这会自动编译并运行coze.java）
+docker-compose up -d
+```
+
+或者，如果您只是想临时运行一个Java文件而不修改Dockerfile：
+
+```bash
+# 进入容器
+docker exec -it java bash
+
+# 手动编译和运行Java文件
+cd /app
+cp /root/workspace/coze.java .  # 如果文件在workspace目录下
+javac coze.java
+java coze
+```
+
 ## 端口映射
 
 - 主机 8080 端口映射到容器 8080 端口
